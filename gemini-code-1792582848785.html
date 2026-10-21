@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CA Workspace Pro - Practice Management Suite</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            50: '#f0f4f8',
+                            100: '#d9e2ec',
+                            500: '#334e68',
+                            800: '#102a43',
+                            900: '#0b69a3',
+                            950: '#061a2c',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Light Gray Subdued Placeholders */
+        input::placeholder, textarea::placeholder, select::placeholder {
+            color: #9ca3af !important;
+            opacity: 0.6 !important;
+            font-style: italic !important;
+        }
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white; color: black; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 transition-colors duration-200">
+
+    <!-- MAIN APP SUITE CONTAINER -->
+    <div id="appContainer" class="flex h-screen overflow-hidden">
+
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="w-64 bg-slate-900 text-white flex flex-col justify-between transition-all duration-300 z-30 fixed md:relative h-full -translate-x-full md:translate-x-0 no-print">
+            <div>
+                <!-- Brand Header -->
+                <div class="p-5 flex items-center justify-between border-b border-slate-800">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-xl text-white shadow-lg shadow-blue-500/30">
+                            CA
+                        </div>
+                        <div>
+                            <h1 class="font-bold text-base leading-tight">CA Office Suite</h1>
+                            <p class="text-[11px] text-emerald-400 font-medium">Google Sheets Database</p>
+                        </div>
+                    </div>
+                    <button id="closeSidebar" class="md:hidden text-slate-400 hover:text-white">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="p-4 space-y-1 font-medium text-sm">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl bg-blue-600 text-white transition-all">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                        <span>Dashboard</span>
+                    </button>
+                    <button onclick="switchTab('tasks')" id="nav-tasks" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-all">
+                        <i data-lucide="check-square" class="w-4 h-4"></i>
+                        <span>Work & Tasks</span>
+                    </button>
+                    <button onclick="switchTab('clients')" id="nav-clients" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-all">
+                        <i data-lucide="users" class="w-4 h-4"></i>
+                        <span>Client Master</span>
+                    </button>
+                    <button onclick="switchTab('calendar')" id="nav-calendar" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-all">
+                        <i data-lucide="calendar-check-2" class="w-4 h-4"></i>
+                        <span>Compliance Calendar</span>
+                    </button>
+                    <button onclick="switchTab('calculator')" id="nav-calculator" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-all">
+                        <i data-lucide="calculator" class="w-4 h-4"></i>
+                        <span>Tax & GST Calculator</span>
+                    </button>
+                    <button onclick="switchTab('billing')" id="nav-billing" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-all">
+                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                        <span>GST Billing & History</span>
+                    </button>
+                    <button onclick="switchTab('checklists')" id="nav-checklists" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-all">
+                        <i data-lucide="list-checks" class="w-4 h-4"></i>
+                        <span>Doc Checklists</span>
+                    </button>
+                    <button onclick="switchTab('profile')" id="nav-profile" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-all">
+                        <i data-lucide="user-cog" class="w-4 h-4"></i>
+                        <span>Firm & Profile Settings</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Profile Badge & Theme Toggle -->
+            <div class="p-4 border-t border-slate-800 space-y-2">
+                <div class="flex items-center justify-between p-2 rounded-xl bg-slate-800/60">
+                    <div class="flex items-center gap-2 overflow-hidden">
+                        <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center font-bold text-slate-900 text-xs shrink-0" id="userAvatar">
+                            CA
+                        </div>
+                        <div class="truncate">
+                            <p class="text-xs font-semibold text-slate-200 truncate" id="sideUserName">CA Practitioner</p>
+                            <p class="text-[10px] text-slate-400 truncate" id="sideFirmName">Practice Suite</p>
+                        </div>
+                    </div>
+                    <button id="themeToggle" class="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-slate-700">
+                        <i data-lucide="moon" id="themeIcon" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <div class="flex-1 flex flex-col h-full overflow-y-auto">
+
+            <!-- Top App Bar -->
+            <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 p-4 sticky top-0 z-20 flex items-center justify-between no-print">
+                <div class="flex items-center gap-3">
+                    <button id="openSidebar" class="md:hidden text-slate-600 dark:text-slate-300 p-2">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                    <div>
+                        <h2 id="pageTitle" class="text-xl font-bold text-slate-800 dark:text-white">Dashboard Overview</h2>
+                        <span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">Connected to Google Sheets Sync Engine</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="openModal('addTaskModal')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-medium px-3.5 py-2 rounded-xl flex items-center gap-2 transition shadow-sm">
+                        <i data-lucide="plus" class="w-4 h-4"></i> <span class="hidden sm:inline">New Work Task</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Workspace Pages -->
+            <main class="p-4 sm:p-6 space-y-6 max-w-7xl w-full mx-auto flex-1">
+
+                <!-- 1. DASHBOARD TAB -->
+                <section id="tab-dashboard" class="space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex justify-between items-start">
+                            <div>
+                                <p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Active Clients</p>
+                                <h3 id="statClientsCount" class="text-2xl font-bold mt-2 text-slate-900 dark:text-white">0</h3>
+                                <p class="text-xs text-emerald-600 dark:text-emerald-400 mt-1 font-medium">Master List</p>
+                            </div>
+                            <div class="p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl">
+                                <i data-lucide="users" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex justify-between items-start">
+                            <div>
+                                <p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Pending Work Tasks</p>
+                                <h3 id="statPendingTasks" class="text-2xl font-bold mt-2 text-amber-600 dark:text-amber-400">0</h3>
+                                <p class="text-xs text-amber-600 dark:text-amber-400 mt-1 font-medium">Action Needed</p>
+                            </div>
+                            <div class="p-3 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-xl">
+                                <i data-lucide="clock" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex justify-between items-start">
+                            <div>
+                                <p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Completed Work</p>
+                                <h3 id="statCompletedTasks" class="text-2xl font-bold mt-2 text-emerald-600 dark:text-emerald-400">0</h3>
+                                <p class="text-xs text-emerald-600 dark:text-emerald-400 mt-1 font-medium">Filed & Done</p>
+                            </div>
+                            <div class="p-3 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl">
+                                <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex justify-between items-start">
+                            <div>
+                                <p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Invoices Issued</p>
+                                <h3 id="statInvoiceCount" class="text-2xl font-bold mt-2 text-slate-900 dark:text-white">0</h3>
+                                <p class="text-xs text-slate-400 mt-1 font-medium">Billed to Clients</p>
+                            </div>
+                            <div class="p-3 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-xl">
+                                <i data-lucide="file-text" class="w-6 h-6"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Work History Log -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-2 bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                    <i data-lucide="history" class="w-4 h-4 text-blue-500"></i> Recent Completed Work History
+                                </h3>
+                                <button onclick="switchTab('tasks')" class="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline">View All Tasks &rarr;</button>
+                            </div>
+                            <div id="dashHistoryList" class="space-y-3">
+                                <p class="text-xs text-slate-400 py-4 text-center">No completed work logged yet.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+                            <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                <i data-lucide="zap" class="w-4 h-4 text-amber-500"></i> Practice Shortcuts
+                            </h3>
+                            <div class="space-y-2">
+                                <button onclick="openModal('addClientModal')" class="w-full text-left p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50 hover:bg-blue-50 dark:hover:bg-slate-700 transition flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <i data-lucide="user-plus" class="w-4 h-4 text-blue-500"></i>
+                                        <span class="text-xs font-semibold text-slate-700 dark:text-slate-200">Add New Client</span>
+                                    </div>
+                                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                                </button>
+                                <button onclick="switchTab('billing')" class="w-full text-left p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50 hover:bg-blue-50 dark:hover:bg-slate-700 transition flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <i data-lucide="file-plus" class="w-4 h-4 text-emerald-500"></i>
+                                        <span class="text-xs font-semibold text-slate-700 dark:text-slate-200">Create GST Invoice</span>
+                                    </div>
+                                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                                </button>
+                                <button onclick="switchTab('calculator')" class="w-full text-left p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50 hover:bg-blue-50 dark:hover:bg-slate-700 transition flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <i data-lucide="calculator" class="w-4 h-4 text-purple-500"></i>
+                                        <span class="text-xs font-semibold text-slate-700 dark:text-slate-200">Old vs New Tax Calc</span>
+                                    </div>
+                                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. WORK & TASKS TAB -->
+                <section id="tab-tasks" class="space-y-6 hidden">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div class="flex gap-2 overflow-x-auto w-full sm:w-auto">
+                            <button onclick="filterTasks('ALL')" class="task-filter-btn active px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white">All Tasks</button>
+                            <button onclick="filterTasks('Pending')" class="task-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">Pending</button>
+                            <button onclick="filterTasks('Completed')" class="task-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">Completed</button>
+                        </div>
+                        <button onclick="openModal('addTaskModal')" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2">
+                            <i data-lucide="plus" class="w-4 h-4"></i> Add Work Task
+                        </button>
+                    </div>
+
+                    <div id="taskListGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Dynamic -->
+                    </div>
+                </section>
+
+                <!-- 3. CLIENT MASTER TAB -->
+                <section id="tab-clients" class="space-y-6 hidden">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div class="relative w-full sm:w-80">
+                            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                            <input type="text" id="clientSearchInput" onkeyup="searchClients()" placeholder="Search client name, PAN, GSTIN..." class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-800 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                        <button onclick="openModal('addClientModal')" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-2">
+                            <i data-lucide="user-plus" class="w-4 h-4"></i> Add Client
+                        </button>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        <th class="p-4">Client / Business Name</th>
+                                        <th class="p-4">Entity Type</th>
+                                        <th class="p-4">PAN / GSTIN</th>
+                                        <th class="p-4">Contact Phone</th>
+                                        <th class="p-4">Status</th>
+                                        <th class="p-4 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="clientsTableBody" class="divide-y divide-slate-100 dark:divide-slate-700/60 text-sm">
+                                    <!-- Dynamic -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. STATUTORY COMPLIANCE CALENDAR TAB -->
+                <section id="tab-calendar" class="space-y-6 hidden">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700">
+                        <div class="flex gap-2 overflow-x-auto w-full sm:w-auto">
+                            <button onclick="filterCalendar('ALL')" class="cal-filter-btn active px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white">All Filings</button>
+                            <button onclick="filterCalendar('GST')" class="cal-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">GST</button>
+                            <button onclick="filterCalendar('INCOME_TAX')" class="cal-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">Income Tax</button>
+                            <button onclick="filterCalendar('MCA')" class="cal-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">MCA / ROC</button>
+                        </div>
+                        <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Statutory Compliance Calendar</span>
+                    </div>
+
+                    <div id="calendarList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Dynamic -->
+                    </div>
+                </section>
+
+                <!-- 5. TAX CALCULATORS TAB -->
+                <section id="tab-calculator" class="space-y-6 hidden">
+                    <div class="flex border-b border-slate-200 dark:border-slate-700 gap-6">
+                        <button onclick="switchCalcTab('incomeTax')" id="calcTab-incomeTax" class="pb-3 text-sm font-bold border-b-2 border-blue-600 text-blue-600 dark:text-blue-400">
+                            Income Tax (Old vs New)
+                        </button>
+                        <button onclick="switchCalcTab('gst')" id="calcTab-gst" class="pb-3 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200">
+                            GST Rate Calculator
+                        </button>
+                    </div>
+
+                    <!-- Income Tax Calculator Panel -->
+                    <div id="calcPanel-incomeTax" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <div class="lg:col-span-5 bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+                            <h3 class="font-bold text-slate-800 dark:text-white border-b border-slate-100 dark:border-slate-700 pb-3">Income & Deductions</h3>
+                            
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Gross Annual Income (₹)</label>
+                                <input type="number" id="itGrossIncome" value="1200000" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm font-semibold focus:ring-2 focus:ring-blue-500 outline-none" oninput="calculateIT()">
+                            </div>
+
+                            <div class="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-xl space-y-3">
+                                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider block">Old Regime Deductions</span>
+                                <div>
+                                    <label class="block text-xs text-slate-600 dark:text-slate-400">80C (PPF, EPF, ELSS) [Max 1.5L]</label>
+                                    <input type="number" id="itDeduction80C" value="150000" class="w-full p-2 mt-1 rounded-lg border border-slate-300 dark:border-slate-700 dark:bg-slate-800 text-sm" oninput="calculateIT()">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-600 dark:text-slate-400">80D Mediclaim Premium</label>
+                                    <input type="number" id="itDeduction80D" value="25000" class="w-full p-2 mt-1 rounded-lg border border-slate-300 dark:border-slate-700 dark:bg-slate-800 text-sm" oninput="calculateIT()">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-600 dark:text-slate-400">HRA / Home Loan Interest (Sec 24)</label>
+                                    <input type="number" id="itDeductionHRA" value="100000" class="w-full p-2 mt-1 rounded-lg border border-slate-300 dark:border-slate-700 dark:bg-slate-800 text-sm" oninput="calculateIT()">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-7 bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-bold text-slate-800 dark:text-white border-b border-slate-100 dark:border-slate-700 pb-3">Regime Comparison</h3>
+                                
+                                <div class="grid grid-cols-2 gap-4 mt-4">
+                                    <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/40">
+                                        <span class="text-xs font-bold text-slate-500 uppercase">Old Tax Regime</span>
+                                        <p class="text-xs text-slate-500 mt-1">Deductions: <span id="resOldDeductions" class="font-semibold text-slate-700 dark:text-slate-300">₹ 3,25,000</span></p>
+                                        <p class="text-xs text-slate-500">Taxable: <span id="resOldTaxable" class="font-semibold text-slate-700 dark:text-slate-300">₹ 8,75,000</span></p>
+                                        <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-700">
+                                            <p class="text-xs text-slate-500">Tax Payable:</p>
+                                            <h4 id="resOldTax" class="text-xl font-bold text-slate-900 dark:text-white">₹ 91,000</h4>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-4 rounded-xl border-2 border-blue-500 bg-blue-50/50 dark:bg-blue-950/20">
+                                        <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase">New Tax Regime</span>
+                                        <p class="text-xs text-slate-500 mt-1">Std Deduction: <span class="font-semibold text-slate-700 dark:text-slate-300">₹ 75,000</span></p>
+                                        <p class="text-xs text-slate-500">Taxable: <span id="resNewTaxable" class="font-semibold text-slate-700 dark:text-slate-300">₹ 11,25,000</span></p>
+                                        <div class="mt-4 pt-3 border-t border-blue-200 dark:border-blue-900">
+                                            <p class="text-xs text-slate-500">Tax Payable:</p>
+                                            <h4 id="resNewTax" class="text-xl font-bold text-blue-600 dark:text-blue-400">₹ 70,200</h4>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="itRecommendation" class="mt-6 p-4 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-200 flex items-center gap-3">
+                                    <i data-lucide="check-circle-2" class="w-6 h-6 text-emerald-600"></i>
+                                    <div>
+                                        <p class="text-sm font-bold">New Tax Regime is More Beneficial!</p>
+                                        <p class="text-xs">Saves approx <span id="taxSavingsVal" class="font-bold">₹ 20,800</span> in tax.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GST Calculator Panel -->
+                    <div id="calcPanel-gst" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden">
+                        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+                            <h3 class="font-bold text-slate-800 dark:text-white border-b border-slate-100 dark:border-slate-700 pb-3">GST Calculation</h3>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Amount (₹)</label>
+                                <input type="number" id="gstAmount" value="10000" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm font-semibold" oninput="calculateGST()">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">GST Rate (%)</label>
+                                <select id="gstRate" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm" onchange="calculateGST()">
+                                    <option value="5">5%</option>
+                                    <option value="12">12%</option>
+                                    <option value="18" selected>18% (Professional Services)</option>
+                                    <option value="28">28%</option>
+                                </select>
+                            </div>
+                            <div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button onclick="setGSTType('exclusive')" id="btnGstExclusive" class="p-2 text-xs font-bold rounded-xl border-2 border-blue-600 bg-blue-50 dark:bg-blue-900/30 text-blue-600">Exclusive of GST</button>
+                                    <button onclick="setGSTType('inclusive')" id="btnGstInclusive" class="p-2 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 text-slate-600">Inclusive of GST</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-bold text-slate-800 dark:text-white border-b border-slate-100 dark:border-slate-700 pb-3">GST Breakdown</h3>
+                                <div class="space-y-3 mt-4">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-slate-500">Base Net Amount:</span>
+                                        <span id="resGstBase" class="font-bold">₹ 10,000.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-slate-500">CGST (50%):</span>
+                                        <span id="resGstCGST" class="font-semibold text-slate-700 dark:text-slate-300">₹ 900.00</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-slate-500">SGST (50%):</span>
+                                        <span id="resGstSGST" class="font-semibold text-slate-700 dark:text-slate-300">₹ 900.00</span>
+                                    </div>
+                                    <div class="pt-3 border-t border-slate-200 dark:border-slate-700 flex justify-between text-base font-bold">
+                                        <span class="text-slate-800 dark:text-white">Total Gross Value:</span>
+                                        <span id="resGstTotal" class="text-blue-600 dark:text-blue-400">₹ 11,800.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. GST BILLING TAB -->
+                <section id="tab-billing" class="space-y-6 hidden">
+                    <div class="no-print flex justify-between items-center bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700">
+                        <div>
+                            <h3 class="font-bold text-slate-800 dark:text-white">GST Invoice Builder & History</h3>
+                            <p class="text-xs text-slate-500">Generate, print and save GST invoices to Google Sheets</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="saveInvoiceToSheet()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2">
+                                <i data-lucide="save" class="w-4 h-4"></i> Save Invoice
+                            </button>
+                            <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2">
+                                <i data-lucide="printer" class="w-4 h-4"></i> Print
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Printable Invoice -->
+                    <div class="bg-white text-slate-900 p-8 rounded-2xl shadow-md border border-slate-200 max-w-4xl mx-auto space-y-6 text-sm">
+                        <div class="flex justify-between items-start border-b border-slate-200 pb-6">
+                            <div>
+                                <h1 class="text-2xl font-bold text-slate-900" id="invFirmName">FIRM & ASSOCIATES</h1>
+                                <p class="text-xs text-slate-600 font-medium">Chartered Accountants Practice</p>
+                                <p class="text-xs text-slate-500 mt-1" id="invFirmFRN">FRN: 000000N | GSTIN: 07AAAAA0000A1Z5</p>
+                                <p class="text-xs text-slate-500" id="invFirmAddr">New Delhi, India</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded uppercase">Tax Invoice</span>
+                                <p class="text-xs text-slate-500 mt-2">Invoice #: <input type="text" id="invNum" value="INV/2026/001" class="font-semibold text-slate-800 border-b border-slate-300 w-36 text-right outline-none"></p>
+                                <p class="text-xs text-slate-500">Date: <input type="date" id="invDate" class="font-semibold text-slate-800 border-b border-slate-300 text-right outline-none"></p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-6 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase">Bill To (Client):</p>
+                                <select id="invClientSelect" onchange="loadClientInvoiceDetails()" class="w-full mt-1 font-bold bg-transparent text-slate-800 border-b border-slate-300 text-sm outline-none">
+                                    <option value="">-- Select Client --</option>
+                                </select>
+                                <p id="invClientGSTIN" class="text-xs text-slate-600 mt-1">GSTIN: --</p>
+                                <p id="invClientAddress" class="text-xs text-slate-600">Details: --</p>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase">Service Category:</p>
+                                <p class="text-xs text-slate-600 mt-1">SAC Code: 998222 (Accounting & Auditing Services)</p>
+                                <p class="text-xs text-slate-600">Place of Supply: State (07)</p>
+                            </div>
+                        </div>
+
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-200 text-xs text-slate-500 uppercase font-semibold text-left">
+                                    <th class="py-2">Description of Services</th>
+                                    <th class="py-2 text-center">SAC Code</th>
+                                    <th class="py-2 text-right">Amount (₹)</th>
+                                    <th class="py-2 text-center no-print">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="invoiceItemsBody" class="divide-y divide-slate-100">
+                                <!-- Dynamic -->
+                            </tbody>
+                        </table>
+
+                        <button onclick="addInvoiceRow()" class="no-print text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Service Line
+                        </button>
+
+                        <div class="flex justify-end pt-4 border-t border-slate-200">
+                            <div class="w-64 space-y-2 text-xs">
+                                <div class="flex justify-between text-slate-600">
+                                    <span>Subtotal:</span>
+                                    <span id="invSubtotal" class="font-semibold">₹ 0.00</span>
+                                </div>
+                                <div class="flex justify-between text-slate-600">
+                                    <span>CGST (9%):</span>
+                                    <span id="invCGST" class="font-semibold">₹ 0.00</span>
+                                </div>
+                                <div class="flex justify-between text-slate-600">
+                                    <span>SGST (9%):</span>
+                                    <span id="invSGST" class="font-semibold">₹ 0.00</span>
+                                </div>
+                                <div class="flex justify-between text-sm font-bold text-slate-900 border-t border-slate-200 pt-2">
+                                    <span>Grand Total:</span>
+                                    <span id="invGrandTotal" class="text-blue-600">₹ 0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Invoice History Table -->
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 no-print space-y-4">
+                        <h4 class="font-bold text-slate-800 dark:text-white">Saved Invoice History</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-sm">
+                                <thead>
+                                    <tr class="border-b border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-500 uppercase">
+                                        <th class="p-3">Invoice #</th>
+                                        <th class="p-3">Client</th>
+                                        <th class="p-3">Date</th>
+                                        <th class="p-3">Total Amount</th>
+                                        <th class="p-3 text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="savedInvoicesTbody" class="divide-y divide-slate-100 dark:divide-slate-700">
+                                    <!-- Dynamic -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. DOCUMENT CHECKLISTS TAB -->
+                <section id="tab-checklists" class="space-y-6 hidden">
+                    <div class="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700">
+                        <h3 class="font-bold text-slate-800 dark:text-white mb-2">Client Document Request Checklists</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Select requirement checklist to copy text for sending via WhatsApp or Email.</p>
+                        
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="loadChecklist('ITR')" class="chk-btn active px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white">ITR Return Filing</button>
+                            <button onclick="loadChecklist('GST_REG')" class="chk-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">GST Registration</button>
+                            <button onclick="loadChecklist('TAX_AUDIT')" class="chk-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">Tax Audit Prep (Sec 44AB)</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3">
+                            <h4 id="chkTitle" class="font-bold text-slate-800 dark:text-white">ITR Return Preparation Documents</h4>
+                            <button onclick="copyChecklistToClipboard()" class="text-xs font-semibold bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-lg flex items-center gap-2">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy Checklist Text
+                            </button>
+                        </div>
+                        <div id="chkItemsContainer" class="space-y-2">
+                            <!-- Dynamic -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 8. USER PROFILE & FIRM SETTINGS TAB -->
+                <section id="tab-profile" class="space-y-6 hidden">
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 max-w-3xl mx-auto space-y-6">
+                        <h3 class="font-bold text-slate-800 dark:text-white border-b border-slate-100 dark:border-slate-700 pb-3">Chartered Accountant Practice Profile</h3>
+                        
+                        <form id="profileForm" onsubmit="saveUserProfile(event)" class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">CA Practitioner Name</label>
+                                    <input type="text" id="profCAName" placeholder="e.g. CA Rajesh Sharma" required class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Firm Name</label>
+                                    <input type="text" id="profFirmName" placeholder="e.g. Sharma & Associates CA" required class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">ICAI Membership No.</label>
+                                    <input type="text" id="profMemNo" placeholder="e.g. 500123" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Firm Registration No. (FRN)</label>
+                                    <input type="text" id="profFRN" placeholder="e.g. 001234N" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Office Contact Phone</label>
+                                    <input type="tel" id="profPhone" placeholder="e.g. 9800000000" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Firm GSTIN</label>
+                                    <input type="text" id="profGSTIN" placeholder="e.g. 07AAAAA0000A1Z5" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Office Address</label>
+                                <textarea id="profAddress" rows="2" placeholder="e.g. Connaught Place, New Delhi" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm"></textarea>
+                            </div>
+                            <div class="pt-3 flex justify-end">
+                                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl text-xs flex items-center gap-2">
+                                    <i data-lucide="save" class="w-4 h-4"></i> Save Profile Details
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD CLIENT -->
+    <div id="addClientModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden no-print">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 w-full max-w-lg p-6 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3">
+                <h3 class="font-bold text-slate-800 dark:text-white">Add New Client</h3>
+                <button onclick="closeModal('addClientModal')" class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form id="clientForm" onsubmit="saveClientLocal(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Client Name</label>
+                    <input type="text" id="cName" required placeholder="e.g. Apex Tech Solutions Pvt Ltd" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Entity Type</label>
+                        <select id="cType" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm">
+                            <option value="Company">Pvt Ltd / Company</option>
+                            <option value="LLP/Partnership">LLP / Firm</option>
+                            <option value="Individual">Individual / Proprietorship</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">PAN</label>
+                        <input type="text" id="cPAN" required placeholder="e.g. ABCDE1234F" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm uppercase">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">GSTIN</label>
+                        <input type="text" id="cGSTIN" placeholder="e.g. 07AAAAA0000A1Z5" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm uppercase">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Contact Phone</label>
+                        <input type="tel" id="cPhone" required placeholder="e.g. 9800000000" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm">
+                    </div>
+                </div>
+                <div class="pt-3 flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('addClientModal')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700">Save Client</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD TASK -->
+    <div id="addTaskModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden no-print">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 w-full max-w-lg p-6 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3">
+                <h3 class="font-bold text-slate-800 dark:text-white">Create Work Task</h3>
+                <button onclick="closeModal('addTaskModal')" class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form id="taskForm" onsubmit="saveTaskLocal(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Task Title</label>
+                    <input type="text" id="tTitle" required placeholder="e.g. GSTR-3B Return Filing" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Assign Client</label>
+                        <select id="tClient" required class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm">
+                            <option value="">-- Select Client --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Category</label>
+                        <select id="tCategory" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm">
+                            <option value="ITR">Income Tax Return</option>
+                            <option value="GST">GST Return</option>
+                            <option value="Audit">Tax / Statutory Audit</option>
+                            <option value="ROC">ROC / MCA Filing</option>
+                            <option value="Bookkeeping">Bookkeeping & Accounts</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Due Date</label>
+                        <input type="date" id="tDueDate" required class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Priority</label>
+                        <select id="tPriority" class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm">
+                            <option value="Normal">Normal</option>
+                            <option value="High">High / Urgent</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Work Notes / Reminders</label>
+                    <textarea id="tNotes" rows="2" placeholder="e.g. Awaiting bank statement..." class="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 dark:bg-slate-900 text-sm"></textarea>
+                </div>
+                <div class="pt-3 flex justify-end gap-2">
+                    <button type="button" onclick="closeModal('addTaskModal')" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700">Add Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-lg border border-slate-700 hidden text-xs font-medium z-50 flex items-center gap-2">
+        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+        <span id="toastMsg">Action completed successfully</span>
+    </div>
+
+    <!-- APPLICATION JAVASCRIPT (GOOGLE SHEETS INTEGRATION) -->
+    <script>
+        // Google Apps Script Deployment URL
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwlT8sAcYB8hl64lhcwhiwpLuHys_dag94-2OE7jfoYUXUlo1Ba5eCilsIsRUQ8Efy9/exec";
+
+        // State Management
+        let clientsList = JSON.parse(localStorage.getItem('ca_clients')) || [];
+        let tasksList = JSON.parse(localStorage.getItem('ca_tasks')) || [];
+        let invoicesList = JSON.parse(localStorage.getItem('ca_invoices')) || [];
+        let userProfileData = JSON.parse(localStorage.getItem('ca_profile')) || {
+            caName: "",
+            firmName: "",
+            memNo: "",
+            frn: "",
+            phone: "",
+            gstin: "",
+            address: ""
+        };
+
+        // Expose functions globally
+        window.switchTab = switchTab;
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+        window.saveClientLocal = saveClientLocal;
+        window.deleteClientLocal = deleteClientLocal;
+        window.saveTaskLocal = saveTaskLocal;
+        window.updateTaskStatusLocal = updateTaskStatusLocal;
+        window.deleteTaskLocal = deleteTaskLocal;
+        window.filterTasks = filterTasks;
+        window.searchClients = searchClients;
+        window.calculateIT = calculateIT;
+        window.calculateGST = calculateGST;
+        window.setGSTType = setGSTType;
+        window.switchCalcTab = switchCalcTab;
+        window.loadClientInvoiceDetails = loadClientInvoiceDetails;
+        window.addInvoiceRow = addInvoiceRow;
+        window.removeInvoiceRow = removeInvoiceRow;
+        window.updateInvoiceRow = updateInvoiceRow;
+        window.saveInvoiceToSheet = saveInvoiceToSheet;
+        window.deleteInvoiceLocal = deleteInvoiceLocal;
+        window.loadChecklist = loadChecklist;
+        window.copyChecklistToClipboard = copyChecklistToClipboard;
+        window.saveUserProfile = saveUserProfile;
+        window.filterCalendar = filterCalendar;
+
+        // GOOGLE SHEETS SYNC ENGINE
+        async function saveToGoogleSheet(sheetName, rowData) {
+            try {
+                showToast("Google Sheet mein save ho raha hai...");
+                await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({
+                        sheetName: sheetName,
+                        action: "add",
+                        row: rowData
+                    })
+                });
+                showToast("Data Google Sheet mein save ho gaya!");
+            } catch (error) {
+                console.error("Error saving to sheet:", error);
+                showToast("Sheet Sync Error!");
+            }
+        }
+
+        // INITIALIZE UI
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('invDate').valueAsDate = new Date();
+            applyUserProfileUI();
+            renderClients();
+            renderTasks('ALL');
+            renderSavedInvoices();
+            renderCalendar('ALL');
+            calculateIT();
+            calculateGST();
+            renderInvoice();
+            loadChecklist('ITR');
+
+            document.getElementById('openSidebar').onclick = () => document.getElementById('sidebar').classList.remove('-translate-x-full');
+            document.getElementById('closeSidebar').onclick = () => document.getElementById('sidebar').classList.add('-translate-x-full');
+
+            document.getElementById('themeToggle').onclick = () => {
+                const html = document.documentElement;
+                html.classList.toggle('dark');
+                const icon = document.getElementById('themeIcon');
+                if(html.classList.contains('dark')) {
+                    icon.setAttribute('data-lucide', 'sun');
+                } else {
+                    icon.setAttribute('data-lucide', 'moon');
+                }
+                lucide.createIcons();
+            };
+
+            lucide.createIcons();
+        });
+
+        // PROFILE FUNCTIONS
+        function applyUserProfileUI() {
+            document.getElementById('sideUserName').innerText = userProfileData.caName || "CA Practitioner";
+            document.getElementById('sideFirmName').innerText = userProfileData.firmName || "Practice Suite";
+            document.getElementById('userAvatar').innerText = (userProfileData.caName || "CA").substring(0, 2).toUpperCase();
+
+            document.getElementById('profCAName').value = userProfileData.caName || '';
+            document.getElementById('profFirmName').value = userProfileData.firmName || '';
+            document.getElementById('profMemNo').value = userProfileData.memNo || '';
+            document.getElementById('profFRN').value = userProfileData.frn || '';
+            document.getElementById('profPhone').value = userProfileData.phone || '';
+            document.getElementById('profGSTIN').value = userProfileData.gstin || '';
+            document.getElementById('profAddress').value = userProfileData.address || '';
+
+            document.getElementById('invFirmName').innerText = (userProfileData.firmName || "FIRM & ASSOCIATES").toUpperCase();
+            document.getElementById('invFirmFRN').innerText = `FRN: ${userProfileData.frn || '000000N'} | GSTIN: ${userProfileData.gstin || '07AAAAA0000A1Z5'}`;
+            document.getElementById('invFirmAddr').innerText = userProfileData.address || 'New Delhi, India';
+        }
+
+        function saveUserProfile(e) {
+            e.preventDefault();
+            userProfileData = {
+                caName: document.getElementById('profCAName').value,
+                firmName: document.getElementById('profFirmName').value,
+                memNo: document.getElementById('profMemNo').value,
+                frn: document.getElementById('profFRN').value,
+                phone: document.getElementById('profPhone').value,
+                gstin: document.getElementById('profGSTIN').value,
+                address: document.getElementById('profAddress').value
+            };
+            localStorage.setItem('ca_profile', JSON.stringify(userProfileData));
+            applyUserProfileUI();
+            showToast("Profile details saved!");
+        }
+
+        // CLIENT MASTER FUNCTIONS
+        function renderClients() {
+            const tbody = document.getElementById('clientsTableBody');
+            const selectTask = document.getElementById('tClient');
+            const selectInv = document.getElementById('invClientSelect');
+
+            tbody.innerHTML = '';
+            selectTask.innerHTML = '<option value="">-- Select Client --</option>';
+            selectInv.innerHTML = '<option value="">-- Select Client --</option>';
+
+            if(clientsList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-xs text-slate-400">No clients registered yet. Click 'Add Client'.</td></tr>`;
+            }
+
+            clientsList.forEach((c, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 dark:hover:bg-slate-700/30 transition";
+                tr.innerHTML = `
+                    <td class="p-4 font-semibold text-slate-800 dark:text-white">${c.name}</td>
+                    <td class="p-4 text-xs text-slate-500 dark:text-slate-400">${c.type}</td>
+                    <td class="p-4 text-xs font-mono">
+                        <div class="font-bold text-slate-700 dark:text-slate-300">PAN: ${c.pan}</div>
+                        <div class="text-slate-400">GST: ${c.gstin || 'N/A'}</div>
+                    </td>
+                    <td class="p-4 text-xs text-slate-500 dark:text-slate-400">${c.phone}</td>
+                    <td class="p-4">
+                        <span class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
+                            Active
+                        </span>
+                    </td>
+                    <td class="p-4 text-right">
+                        <button onclick="deleteClientLocal(${index})" class="text-red-500 hover:text-red-700 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+
+                const opt1 = document.createElement('option');
+                opt1.value = c.name;
+                opt1.innerText = c.name;
+                selectTask.appendChild(opt1);
+
+                const opt2 = document.createElement('option');
+                opt2.value = c.name;
+                opt2.innerText = c.name;
+                selectInv.appendChild(opt2);
+            });
+
+            document.getElementById('statClientsCount').innerText = clientsList.length;
+            lucide.createIcons();
+        }
+
+        function saveClientLocal(e) {
+            e.preventDefault();
+            const name = document.getElementById('cName').value;
+            const type = document.getElementById('cType').value;
+            const pan = document.getElementById('cPAN').value;
+            const gstin = document.getElementById('cGSTIN').value || 'N/A';
+            const phone = document.getElementById('cPhone').value;
+
+            const newClient = { name, type, pan, gstin, phone };
+            clientsList.push(newClient);
+            localStorage.setItem('ca_clients', JSON.stringify(clientsList));
+            renderClients();
+
+            // Save to Google Sheets (Tab: 'Clients')
+            saveToGoogleSheet("Clients", [name, type, pan, gstin, phone]);
+
+            closeModal('addClientModal');
+            document.getElementById('clientForm').reset();
+        }
+
+        function deleteClientLocal(index) {
+            clientsList.splice(index, 1);
+            localStorage.setItem('ca_clients', JSON.stringify(clientsList));
+            renderClients();
+            showToast("Client removed");
+        }
+
+        function searchClients() {
+            const query = document.getElementById('clientSearchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#clientsTableBody tr');
+            rows.forEach(r => {
+                r.style.display = r.innerText.toLowerCase().includes(query) ? '' : 'none';
+            });
+        }
+
+        // WORK & TASKS FUNCTIONS
+        function renderTasks(filter = 'ALL') {
+            const container = document.getElementById('taskListGrid');
+            container.innerHTML = '';
+
+            const filtered = filter === 'ALL' ? tasksList : tasksList.filter(t => t.status === filter);
+
+            let pendingCount = 0;
+            let completedCount = 0;
+
+            tasksList.forEach(t => {
+                if(t.status === 'Completed') completedCount++;
+                else pendingCount++;
+            });
+
+            document.getElementById('statPendingTasks').innerText = pendingCount;
+            document.getElementById('statCompletedTasks').innerText = completedCount;
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 col-span-3 py-6 text-center">No tasks match this filter.</p>`;
+                renderDashboardHistory();
+                return;
+            }
+
+            filtered.forEach((t, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between space-y-3";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start">
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300 uppercase">${t.category}</span>
+                            <span class="text-[11px] font-semibold ${t.priority === 'High' ? 'text-red-500' : 'text-slate-400'}">${t.priority} Priority</span>
+                        </div>
+                        <h4 class="font-bold text-sm text-slate-800 dark:text-white mt-2">${t.title}</h4>
+                        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1">${t.clientName}</p>
+                        ${t.notes ? `<p class="text-[11px] text-slate-400 italic mt-2 bg-slate-50 dark:bg-slate-900/50 p-2 rounded-lg">${t.notes}</p>` : ''}
+                    </div>
+                    <div class="pt-3 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center text-xs">
+                        <div>
+                            <span class="text-slate-400">Due: </span>
+                            <span class="font-semibold text-slate-700 dark:text-slate-300">${t.dueDate}</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            ${t.status !== 'Completed' ? 
+                                `<button onclick="updateTaskStatusLocal(${index}, 'Completed')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg text-[11px]">Mark Done</button>` : 
+                                `<span class="text-emerald-500 font-bold flex items-center gap-1"><i data-lucide="check" class="w-3.5 h-3.5"></i> Completed</span>`
+                            }
+                            <button onclick="deleteTaskLocal(${index})" class="text-slate-400 hover:text-red-500 p-1"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            renderDashboardHistory();
+            lucide.createIcons();
+        }
+
+        function saveTaskLocal(e) {
+            e.preventDefault();
+            const title = document.getElementById('tTitle').value;
+            const clientName = document.getElementById('tClient').value;
+            const category = document.getElementById('tCategory').value;
+            const dueDate = document.getElementById('tDueDate').value;
+            const priority = document.getElementById('tPriority').value;
+            const notes = document.getElementById('tNotes').value;
+            const status = "Pending";
+
+            const newTask = { title, clientName, category, dueDate, priority, notes, status };
+            tasksList.push(newTask);
+            localStorage.setItem('ca_tasks', JSON.stringify(tasksList));
+            renderTasks('ALL');
+
+            // Save to Google Sheets (Tab: 'Tasks')
+            saveToGoogleSheet("Tasks", [title, clientName, category, dueDate, priority, notes, status]);
+
+            closeModal('addTaskModal');
+            document.getElementById('taskForm').reset();
+        }
+
+        function updateTaskStatusLocal(index, status) {
+            tasksList[index].status = status;
+            tasksList[index].completedAt = new Date().toISOString().split('T')[0];
+            localStorage.setItem('ca_tasks', JSON.stringify(tasksList));
+            renderTasks('ALL');
+            showToast("Work status updated!");
+        }
+
+        function deleteTaskLocal(index) {
+            tasksList.splice(index, 1);
+            localStorage.setItem('ca_tasks', JSON.stringify(tasksList));
+            renderTasks('ALL');
+            showToast("Task deleted");
+        }
+
+        function filterTasks(status) {
+            document.querySelectorAll('.task-filter-btn').forEach(btn => {
+                btn.className = "task-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300";
+            });
+            event.target.className = "task-filter-btn active px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white";
+            renderTasks(status);
+        }
+
+        function renderDashboardHistory() {
+            const container = document.getElementById('dashHistoryList');
+            container.innerHTML = '';
+
+            const completed = tasksList.filter(t => t.status === 'Completed');
+            if(completed.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 py-4 text-center">No completed work logged in history.</p>`;
+                return;
+            }
+
+            completed.slice(0, 4).forEach(item => {
+                const div = document.createElement('div');
+                div.className = "p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40 flex justify-between items-center text-xs";
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center font-bold">
+                            <i data-lucide="check" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 dark:text-white">${item.title}</p>
+                            <p class="text-[11px] text-slate-400">${item.clientName} • ${item.category}</p>
+                        </div>
+                    </div>
+                    <span class="text-slate-400 font-medium">${item.completedAt || 'Filed'}</span>
+                `;
+                container.appendChild(div);
+            });
+            lucide.createIcons();
+        }
+
+        // STATUTORY CALENDAR
+        const calendarDeadlines = [
+            { title: "GSTR-3B Monthly Return", type: "GST", date: "2026-11-20", desc: "Monthly summary return for October", status: "Urgent" },
+            { title: "TDS Payment Deposit (Challan 281)", type: "INCOME_TAX", date: "2026-11-07", desc: "TDS deducted for October month", status: "Normal" },
+            { title: "GSTR-1 Outward Supplies", type: "GST", date: "2026-11-11", desc: "Monthly outward supply details", status: "Normal" },
+            { title: "ROC Form AOC-4 Filing", type: "MCA", date: "2026-10-30", desc: "Filing Financial Statements with MCA", status: "Urgent" },
+            { title: "Q3 Advance Tax Payment", type: "INCOME_TAX", date: "2026-12-15", desc: "3rd Installment of Advance Tax (75%)", status: "Upcoming" }
+        ];
+
+        function renderCalendar(filter = 'ALL') {
+            const container = document.getElementById('calendarList');
+            container.innerHTML = '';
+
+            const filtered = filter === 'ALL' ? calendarDeadlines : calendarDeadlines.filter(c => c.type === filter);
+
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 flex flex-col justify-between space-y-3";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start">
+                            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">${item.type}</span>
+                            <span class="text-xs font-bold ${item.status === 'Urgent' ? 'text-red-500' : 'text-slate-500'}">${item.status}</span>
+                        </div>
+                        <h4 class="font-bold text-sm text-slate-800 dark:text-white mt-2">${item.title}</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${item.desc}</p>
+                    </div>
+                    <div class="pt-3 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center text-xs">
+                        <span class="text-slate-400">Due Date:</span>
+                        <span class="font-bold text-blue-600 dark:text-blue-400">${item.date}</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterCalendar(type) {
+            document.querySelectorAll('.cal-filter-btn').forEach(btn => {
+                btn.className = "cal-filter-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300";
+            });
+            event.target.className = "cal-filter-btn active px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white";
+            renderCalendar(type);
+        }
+
+        // TAX & GST CALCULATORS
+        function calculateIT() {
+            const gross = parseFloat(document.getElementById('itGrossIncome').value) || 0;
+            const c80C = Math.min(parseFloat(document.getElementById('itDeduction80C').value) || 0, 150000);
+            const c80D = parseFloat(document.getElementById('itDeduction80D').value) || 0;
+            const hra = parseFloat(document.getElementById('itDeductionHRA').value) || 0;
+
+            const oldStdDeduction = 50000;
+            const totalDeductionsOld = c80C + c80D + hra + oldStdDeduction;
+            const taxableOld = Math.max(0, gross - totalDeductionsOld);
+            let taxOld = 0;
+
+            if (taxableOld > 1000000) taxOld = 112500 + (taxableOld - 1000000) * 0.3;
+            else if (taxableOld > 500000) taxOld = 12500 + (taxableOld - 500000) * 0.2;
+            else if (taxableOld > 250000) taxOld = (taxableOld - 250000) * 0.05;
+            if (taxableOld <= 500000) taxOld = 0;
+            taxOld += taxOld * 0.04;
+
+            const newStdDeduction = 75000;
+            const taxableNew = Math.max(0, gross - newStdDeduction);
+            let taxNew = 0;
+
+            if (taxableNew > 1500000) taxNew = 150000 + (taxableNew - 1500000) * 0.3;
+            else if (taxableNew > 1200000) taxNew = 90000 + (taxableNew - 1200000) * 0.2;
+            else if (taxableNew > 900000) taxNew = 45000 + (taxableNew - 900000) * 0.15;
+            else if (taxableNew > 600000) taxNew = 15000 + (taxableNew - 600000) * 0.1;
+            else if (taxableNew > 300000) taxNew = (taxableNew - 300000) * 0.05;
+            if (taxableNew <= 700000) taxNew = 0;
+            taxNew += taxNew * 0.04;
+
+            document.getElementById('resOldDeductions').innerText = `₹ ${totalDeductionsOld.toLocaleString('en-IN')}`;
+            document.getElementById('resOldTaxable').innerText = `₹ ${taxableOld.toLocaleString('en-IN')}`;
+            document.getElementById('resOldTax').innerText = `₹ ${Math.round(taxOld).toLocaleString('en-IN')}`;
+
+            document.getElementById('resNewTaxable').innerText = `₹ ${taxableNew.toLocaleString('en-IN')}`;
+            document.getElementById('resNewTax').innerText = `₹ ${Math.round(taxNew).toLocaleString('en-IN')}`;
+            lucide.createIcons();
+        }
+
+        let currentGSTType = 'exclusive';
+        function setGSTType(type) {
+            currentGSTType = type;
+            if(type === 'exclusive') {
+                document.getElementById('btnGstExclusive').className = "p-2 text-xs font-bold rounded-xl border-2 border-blue-600 bg-blue-50 dark:bg-blue-900/30 text-blue-600";
+                document.getElementById('btnGstInclusive').className = "p-2 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 text-slate-600";
+            } else {
+                document.getElementById('btnGstInclusive').className = "p-2 text-xs font-bold rounded-xl border-2 border-blue-600 bg-blue-50 dark:bg-blue-900/30 text-blue-600";
+                document.getElementById('btnGstExclusive').className = "p-2 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 text-slate-600";
+            }
+            calculateGST();
+        }
+
+        function calculateGST() {
+            const amt = parseFloat(document.getElementById('gstAmount').value) || 0;
+            const rate = parseFloat(document.getElementById('gstRate').value) || 18;
+
+            let net = 0, gstTotal = 0, gross = 0;
+
+            if(currentGSTType === 'exclusive') {
+                net = amt;
+                gstTotal = net * (rate / 100);
+                gross = net + gstTotal;
+            } else {
+                gross = amt;
+                net = gross / (1 + (rate / 100));
+                gstTotal = gross - net;
+            }
+
+            const cgst = gstTotal / 2;
+            const sgst = gstTotal / 2;
+
+            document.getElementById('resGstBase').innerText = `₹ ${net.toFixed(2)}`;
+            document.getElementById('resGstCGST').innerText = `₹ ${cgst.toFixed(2)}`;
+            document.getElementById('resGstSGST').innerText = `₹ ${sgst.toFixed(2)}`;
+            document.getElementById('resGstTotal').innerText = `₹ ${gross.toFixed(2)}`;
+        }
+
+        function switchCalcTab(type) {
+            if(type === 'incomeTax') {
+                document.getElementById('calcPanel-incomeTax').classList.remove('hidden');
+                document.getElementById('calcPanel-gst').classList.add('hidden');
+                document.getElementById('calcTab-incomeTax').className = "pb-3 text-sm font-bold border-b-2 border-blue-600 text-blue-600 dark:text-blue-400";
+                document.getElementById('calcTab-gst').className = "pb-3 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200";
+            } else {
+                document.getElementById('calcPanel-incomeTax').classList.add('hidden');
+                document.getElementById('calcPanel-gst').classList.remove('hidden');
+                document.getElementById('calcTab-gst').className = "pb-3 text-sm font-bold border-b-2 border-blue-600 text-blue-600 dark:text-blue-400";
+                document.getElementById('calcTab-incomeTax').className = "pb-3 text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200";
+            }
+        }
+
+        // GST INVOICE ENGINE
+        let invoiceRows = [
+            { desc: "Tax Audit & Certification Services", sac: "998222", amt: 15000 }
+        ];
+
+        function loadClientInvoiceDetails() {
+            const name = document.getElementById('invClientSelect').value;
+            const client = clientsList.find(c => c.name === name);
+            if(client) {
+                document.getElementById('invClientGSTIN').innerText = `GSTIN: ${client.gstin}`;
+                document.getElementById('invClientAddress').innerText = `Type: ${client.type} | PAN: ${client.pan}`;
+            }
+        }
+
+        function renderInvoice() {
+            const tbody = document.getElementById('invoiceItemsBody');
+            tbody.innerHTML = '';
+
+            let subtotal = 0;
+
+            invoiceRows.forEach((row, idx) => {
+                subtotal += row.amt;
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-slate-100";
+                tr.innerHTML = `
+                    <td class="py-2">
+                        <input type="text" value="${row.desc}" onchange="updateInvoiceRow(${idx}, 'desc', this.value)" class="w-full bg-transparent font-medium border-b border-transparent hover:border-slate-300 focus:border-blue-500 outline-none">
+                    </td>
+                    <td class="py-2 text-center text-slate-500">${row.sac}</td>
+                    <td class="py-2 text-right font-semibold">
+                        <input type="number" value="${row.amt}" onchange="updateInvoiceRow(${idx}, 'amt', parseFloat(this.value))" class="w-24 text-right bg-transparent font-semibold border-b border-transparent hover:border-slate-300 focus:border-blue-500 outline-none">
+                    </td>
+                    <td class="py-2 text-center no-print">
+                        <button onclick="removeInvoiceRow(${idx})" class="text-red-500 text-xs"><i data-lucide="x" class="w-4 h-4"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            const cgst = subtotal * 0.09;
+            const sgst = subtotal * 0.09;
+            const grandTotal = subtotal + cgst + sgst;
+
+            document.getElementById('invSubtotal').innerText = `₹ ${subtotal.toFixed(2)}`;
+            document.getElementById('invCGST').innerText = `₹ ${cgst.toFixed(2)}`;
+            document.getElementById('invSGST').innerText = `₹ ${sgst.toFixed(2)}`;
+            document.getElementById('invGrandTotal').innerText = `₹ ${grandTotal.toFixed(2)}`;
+            lucide.createIcons();
+        }
+
+        function addInvoiceRow() {
+            invoiceRows.push({ desc: "Consulting & Advisory Services", sac: "998222", amt: 5000 });
+            renderInvoice();
+        }
+
+        function updateInvoiceRow(idx, field, val) {
+            invoiceRows[idx][field] = val;
+            renderInvoice();
+        }
+
+        function removeInvoiceRow(idx) {
+            invoiceRows.splice(idx, 1);
+            renderInvoice();
+        }
+
+        function saveInvoiceToSheet() {
+            const invNum = document.getElementById('invNum').value;
+            const clientName = document.getElementById('invClientSelect').value || "Walk-in Client";
+            const invDate = document.getElementById('invDate').value;
+            const subtotal = invoiceRows.reduce((a, b) => a + b.amt, 0);
+            const total = subtotal * 1.18;
+
+            const invoiceRecord = {
+                invNum: invNum,
+                clientName: clientName,
+                date: invDate,
+                totalAmount: total
+            };
+
+            invoicesList.push(invoiceRecord);
+            localStorage.setItem('ca_invoices', JSON.stringify(invoicesList));
+            renderSavedInvoices();
+
+            // Save to Google Sheets (Tab: 'Invoices')
+            saveToGoogleSheet("Invoices", [invNum, clientName, invDate, total.toFixed(2)]);
+        }
+
+        function renderSavedInvoices() {
+            const tbody = document.getElementById('savedInvoicesTbody');
+            tbody.innerHTML = '';
+
+            document.getElementById('statInvoiceCount').innerText = invoicesList.length;
+
+            if(invoicesList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-xs text-slate-400">No saved invoices.</td></tr>`;
+                return;
+            }
+
+            invoicesList.forEach((inv, index) => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 dark:hover:bg-slate-700/40";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-slate-800 dark:text-slate-200">${inv.invNum}</td>
+                    <td class="p-3 text-slate-600 dark:text-slate-300">${inv.clientName}</td>
+                    <td class="p-3 text-slate-500">${inv.date}</td>
+                    <td class="p-3 font-semibold text-emerald-600">₹ ${inv.totalAmount.toFixed(2)}</td>
+                    <td class="p-3 text-right">
+                        <button onclick="deleteInvoiceLocal(${index})" class="text-red-500 hover:text-red-700 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            lucide.createIcons();
+        }
+
+        function deleteInvoiceLocal(index) {
+            invoicesList.splice(index, 1);
+            localStorage.setItem('ca_invoices', JSON.stringify(invoicesList));
+            renderSavedInvoices();
+            showToast("Invoice record deleted");
+        }
+
+        // DOCUMENT CHECKLISTS
+        const checklists = {
+            ITR: [
+                "Form 16 / 16A TDS Certificates",
+                "Annual Information Statement (AIS) & TIS",
+                "Form 26AS Tax Credit Statement",
+                "Bank Account Statements for FY (All accounts)",
+                "Capital Gains Statement from Broker / Demat",
+                "Chapter VI-A Investment Proofs (80C, 80D, NPS)"
+            ],
+            GST_REG: [
+                "PAN Card of Business / Proprietor",
+                "Aadhaar Card of Applicant / Partners",
+                "Proof of Business Place (Electricity Bill / Rent Agreement)",
+                "NOC from Owner (if rented)",
+                "Cancelled Cheque / Bank Statement",
+                "Authorization Letter / Board Resolution"
+            ],
+            TAX_AUDIT: [
+                "Trial Balance, Profit & Loss A/c, Balance Sheet",
+                "Stock Valuation Sheet as on 31st March",
+                "GST Monthly Reconciliation Statement",
+                "TDS Deduction & Monthly Deposit Records",
+                "Fixed Asset Register & Depreciation Schedule",
+                "Cash Expense Vouchers > ₹10,000 verification"
+            ]
+        };
+
+        function loadChecklist(key) {
+            document.querySelectorAll('.chk-btn').forEach(btn => {
+                btn.className = "chk-btn px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300";
+            });
+            event.target.className = "chk-btn active px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 text-white";
+
+            const titles = {
+                ITR: "Income Tax Return (ITR) Checklist",
+                GST_REG: "New GST Registration Checklist",
+                TAX_AUDIT: "Tax Audit Preparation Checklist (Sec 44AB)"
+            };
+
+            document.getElementById('chkTitle').innerText = titles[key];
+            const container = document.getElementById('chkItemsContainer');
+            container.innerHTML = '';
+
+            checklists[key].forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = "flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-700/40 hover:bg-slate-100 dark:hover:bg-slate-700/70 transition";
+                div.innerHTML = `
+                    <input type="checkbox" id="chk_${idx}" class="w-4 h-4 accent-blue-600 rounded cursor-pointer">
+                    <label for="chk_${idx}" class="text-xs font-medium text-slate-700 dark:text-slate-200 cursor-pointer flex-1">${item}</label>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function copyChecklistToClipboard() {
+            const title = document.getElementById('chkTitle').innerText;
+            const items = Array.from(document.querySelectorAll('#chkItemsContainer label')).map((l, i) => `${i+1}. ${l.innerText}`);
+            const fullText = `📌 *${title}*\n\nPlease provide the following documents:\n\n` + items.join('\n') + `\n\nBest Regards,\n${userProfileData.firmName || 'CA Firm'}`;
+
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = fullText;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+
+            showToast("Checklist copied to clipboard!");
+        }
+
+        // NAVIGATION & MODALS
+        function switchTab(tabId) {
+            const tabs = ['dashboard', 'tasks', 'clients', 'calendar', 'calculator', 'billing', 'checklists', 'profile'];
+            tabs.forEach(id => {
+                document.getElementById(`tab-${id}`).classList.add('hidden');
+                const navBtn = document.getElementById(`nav-${id}`);
+                if(navBtn) navBtn.className = "w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-all";
+            });
+
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if(activeNav) activeNav.className = "w-full flex items-center gap-3 px-4 py-2.5 rounded-xl bg-blue-600 text-white transition-all";
+
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+
+            const titles = {
+                dashboard: "Dashboard Overview",
+                tasks: "Work & Task Management",
+                clients: "Client Master Directory",
+                calendar: "Statutory Compliance Calendar",
+                calculator: "Tax & GST Calculators",
+                billing: "GST Invoice Generator",
+                checklists: "Document Checklist Request",
+                profile: "Firm & User Settings"
+            };
+            document.getElementById('pageTitle').innerText = titles[tabId];
+            lucide.createIcons();
+        }
+
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+    </script>
+</body>
+</html>
